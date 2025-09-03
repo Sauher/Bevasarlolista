@@ -26,7 +26,6 @@ addBtn.addEventListener("click", ()=>{
     RefreshTable()
     ClearForm()
     save()
-    saveProduct(currentitem.name)
     optionGen()
     
 });
@@ -91,17 +90,9 @@ function deleteItem(index){
         save()
     }
 }
-function saveProduct(item){
-    if(productsList.includes(item)){
-        return
-    }
-    else{
-        productsList.push(item)
-    }
-    localStorage.setItem('prodList', JSON.stringify(productsList))
-}
 function save(){
     localStorage.setItem('bevLista', JSON.stringify(items))
+    localStorage.setItem('prodList', JSON.stringify(productsList))
 }
 function load(){
     if (localStorage.getItem('bevLista')){
