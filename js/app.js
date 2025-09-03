@@ -4,23 +4,31 @@ let countField = document.getElementById("countField")
 let addBtn = document.getElementById("addBtn")
 let itemsList = document.getElementById("itemsList")
 let sumLbl = document.getElementById("sumLbl")
+let optionList = document.getElementById("datalistOptions")
+
 let sum = 0
+let currentitem
 let items = []
+let productsList = []
 addBtn.addEventListener("click", ()=>{
     if(nameField.value == '' || priceField.value == 0 || countField.value == 0){
         alert("Nem adtál meg minden adatot!")
         return
     }
-    
-    items.push({
+    currentitem = {
         name:nameField.value,
         price: Number(priceField.value),
         count: Number(countField.value),
         sum: priceField.value * countField.value
-    })
+    }
+    let idx =
+    items.push(currentitem)
     RefreshTable()
     ClearForm()
-
+    save()
+    saveProduct(currentitem.name)
+    optionGen()
+    
 });
 function ClearForm(){
     nameField.value = ''
@@ -36,6 +44,12 @@ function RefreshTable(){
         let td3 = document.createElement("td")
         let td4 = document.createElement("td")
         let td5  = document.createElement("td")
+        let td6 = document.createElement("td")
+        let btn = document.createElement("button")
+        btn.onclick = () => {deleteItem(i)}
+
+        btn.classList.add('btn', 'btn-danger', 'btn-sm')
+        btn.innerHTML = "X"
         
         td1.innerHTML = i+1 +'.'
         td2.innerHTML = items[i].name
@@ -54,16 +68,50 @@ function RefreshTable(){
         tr.appendChild(td3)
         tr.appendChild(td4)
         tr.appendChild(td5)
+        tr.appendChild(td6)
+        td6.appendChild(btn)
         itemsList.appendChild(tr)
         
     }
 sumLbl.innerHTML = sum
 }
-function save(){
-    localStorage.setItem('bevlista', items.toString)
-}
-function load(){}
 
+function optionGen(){
+    optionList.innerHTML = ''
+    for (let i = 0; i < productsList.length; i++) {
+        option = document.createElement("option")
+        option.innerHTML = productsList[i].name
+        optionList.appendChild(option)
+    }
+}
+function deleteItem(index){
+    if(confirm("Biztosan törlöd a tételt?")){
+        items.splice(index, 1)
+        RefreshTable()
+        save()
+    }
+}
+function saveProduct(item){
+    if(productsList.includes(item)){
+        return
+    }
+    else{
+        productsList.push(item)
+    }
+    localStorage.setItem('prodList', JSON.stringify(productsList))
+}
+function save(){
+    localStorage.setItem('bevLista', JSON.stringify(items))
+}
+function load(){
+    if (localStorage.getItem('bevLista')){
+        items = JSON.parse(localStorage.getItem('bevLista'))
+    }
+    if (localStorage.getItem('prodList')){
+        productsList = JSON.parse(localStorage.getItem('prodList'))
+    }
+}
+optionGen()
 load()
-ClearForm()
 RefreshTable()
+ClearForm()
